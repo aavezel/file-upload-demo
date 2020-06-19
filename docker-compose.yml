@@ -7,44 +7,46 @@ services:
     restart: on-failure
     env_file: 
       - ./.env
+    ports: # dev
+      - 27017:27017
     volumes:
       - ./data:/data/db
 
-  # mongo-express:
-  #   image: mongo-express
-  #   restart: on-failure
-  #   links:
-  #     - mongo
-  #   ports:
-  #     - 8081:8081
-  #   env_file: 
-  #     - ./.env
-
-  api:
-    image: node:10-alpine
+  mongo-express:
+    image: mongo-express
     restart: on-failure
     links:
       - mongo
     ports:
-      - 8888:8888
-    environment:
-      - PORT=8888
+      - 8081:8081
     env_file: 
       - ./.env
-    volumes:
-      - ./server:/usr/src/app
-    working_dir: /usr/src/app
-    # entrypoint: node ./bin/www
-    entrypoint: npm run dev
 
-  web:
-    image: nginx:alpine
-    restart: on-failure
-    links:
-      - api
-    ports:
-      - 8080:80
-    env_file: 
-      - ./.env
-    volumes:
-      - ./client/dist:/usr/share/nginx/html:ro
+      # api:
+  #   image: node:10-alpine
+  #   restart: on-failure
+  #   links:
+  #     - mongo
+  #   ports:
+  #     - 8888:8888
+  #   environment:
+  #     - PORT=8888
+  #   env_file: 
+  #     - ./.env
+  #   volumes:
+  #     - ./server:/usr/src/app
+  #   working_dir: /usr/src/app
+  #   # entrypoint: node ./bin/www
+  #   entrypoint: npm run dev
+
+  # web:
+  #   image: nginx:alpine
+  #   restart: on-failure
+  #   links:
+  #     - api
+  #   ports:
+  #     - 8080:80
+  #   env_file: 
+  #     - ./.env
+  #   volumes:
+  #     - ./client/dist:/usr/share/nginx/html:ro
