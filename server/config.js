@@ -9,7 +9,7 @@ config.mongodb = {
 };
 
 config.server = {
-    port: normalizePort(process.env.PORT || '8081'),
+    port: normalizePort(process.env.PORT || '8888 '),
 };
 
 
