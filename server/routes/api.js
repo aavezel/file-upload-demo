@@ -2,10 +2,17 @@ const repository = require('../datasources/repositoryManager');
 const express = require('express');
 const router = express.Router();
 
+const config = require("../config");
+const os = require("os");
+const multer  = require('multer');
+const upload = multer({dest: config.upload_file_path, limits: {fileSize: 1024*1024, files: 1 } });
+
+
 
 router.route('/')
   .get(getAllFiles)
   .put(addFile)
+  .post(upload.single('uploaded_file'), uploadFile)
   .delete(deleteFile);
 
 /* 404 */
@@ -25,8 +32,7 @@ async function getAllFiles(req, res, next) {
   res.json(allFiles);
 }
 
-async function addFile(req, res, next) {
-  const { title = null } = req.body || {}
+async function addFile({body: {title = null}} = {}, res, next) {  
   if (title === null) {
     next("title is empty");
     return;
@@ -42,6 +48,18 @@ async function deleteFile(req, res, next) {
     return;
   }
   await repository.getRepository().deleteFile(id);
+  res.json({"status": "ok"});
+}
+
+async function uploadFile(req, res, next) {  
+  // TODO: add catch
+  const { id = null } = req.body || {}
+  if (id === null) {
+    next("id is empty");
+    return;
+  }
+  const {originalname, filename} = req.file;
+  await repository.getRepository().uploadFile(id, filename, originalname);
   res.json({"status": "ok"});
 }
 
