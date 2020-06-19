@@ -4,15 +4,15 @@
  * Module dependencies.
  */
 
-var app = require('../app');
-var debug = require('debug')('server:server');
-var http = require('http');
+const app = require('../app');
+const config = require('../config');
+const debug = require('debug')('server:server');
+const http = require('http');
+const repositoryManager = require('../datasources/repositoryManager');
 
-/**
- * Get port from environment and store in Express.
- */
+repositoryManager.init(config);
 
-var port = normalizePort(process.env.PORT || '8081');
+const port = config.server.port;
 app.set('port', port);
 
 /**
@@ -28,26 +28,6 @@ var server = http.createServer(app);
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
-
-/**
- * Normalize a port into a number, string, or false.
- */
-
-function normalizePort(val) {
-  var port = parseInt(val, 10);
-
-  if (isNaN(port)) {
-    // named pipe
-    return val;
-  }
-
-  if (port >= 0) {
-    // port number
-    return port;
-  }
-
-  return false;
-}
 
 /**
  * Event listener for HTTP server "error" event.
