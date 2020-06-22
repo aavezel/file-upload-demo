@@ -22,17 +22,26 @@ describe('Api connection', () => {
     it('workflow', async () => {
         const title = 'test file ' + Date.now();
         let file_id = null;
+        let auth_token = null;
+
+        // авторизация
+        {
+            const res = await chai.request(app).get("/auth");
+            expect(res).to.have.status(200);
+            expect(res.body.data).is.not.null;
+            auth_token = "Bearer " + res.body.data;            
+        }
 
         // Проверка коннекта
         {
-            const res = await chai.request(app).get("/api");
+            const res = await chai.request(app).get("/api").set("Authorization", auth_token);
             expect(res).to.have.status(200);
             expect(res.body).to.be.an('array');
         }
 
         // Создаем таск
         {
-            const res = await chai.request(app).put("/api").send({ title });
+            const res = await chai.request(app).put("/api").set("Authorization", auth_token).send({ title });
             expect(res).to.have.status(200);
             expect(res.body.id).is.not.null;
             expect(res.body.date_add).is.not.null;
@@ -42,7 +51,7 @@ describe('Api connection', () => {
 
         // Проверяем что такой id есть в ответе
         {
-            const res = await chai.request(app).get("/api");
+            const res = await chai.request(app).get("/api").set("Authorization", auth_token);
             expect(res).to.have.status(200);
             const filt = res.body.filter(f => f.title === title);
             expect(filt).to.have.lengthOf(1);
@@ -50,7 +59,7 @@ describe('Api connection', () => {
 
         // Проверяем что такой файл можно получить
         {
-            const res = await chai.request(app).get("/api/files/" + file_id);
+            const res = await chai.request(app).get("/api/files/" + file_id).set("Authorization", auth_token);
             expect(res).to.have.status(200);
             expect(res.body.title).is.equal(title);
             expect(res.body).to.not.have.property("real_filename");
@@ -61,7 +70,7 @@ describe('Api connection', () => {
         // Проверяем загрузку данных
         {
             const buffer = Buffer.from("test data file", 'utf8');
-            const res = await chai.request(app).post("/api/files/" + file_id)
+            const res = await chai.request(app).post("/api/files/" + file_id).set("Authorization", auth_token)
                 .type('form')
                 .attach('uploaded_file', buffer, 'test.txt')                
             expect(res).to.have.status(200);
@@ -72,13 +81,13 @@ describe('Api connection', () => {
 
         // Проверяем удаление файла
         {
-            const res = await chai.request(app).delete("/api/files/" + file_id);
+            const res = await chai.request(app).delete("/api/files/" + file_id).set("Authorization", auth_token);
             expect(res).to.have.status(200);
 
-            const resGet = await chai.request(app).get("/api/files/" + file_id);
+            const resGet = await chai.request(app).get("/api/files/" + file_id).set("Authorization", auth_token);
             expect(resGet).to.have.status(404);
 
-            const resGetAll = await chai.request(app).get("/api");
+            const resGetAll = await chai.request(app).get("/api").set("Authorization", auth_token);
             expect(resGetAll).to.have.status(200);
             const filt = resGetAll.body.filter(f => f.id == file_id);
             expect(filt).to.have.lengthOf(0);
@@ -88,10 +97,13 @@ describe('Api connection', () => {
 
     it('test download', async () => {
         const title = 'test file ' + Date.now();        
-        const res = await chai.request(app).put("/api").send({ title });
+        const resAuth = await chai.request(app).get("/auth");
+        const auth_token = "Bearer " + resAuth.body.data;
+        const res = await chai.request(app).put("/api").set("Authorization", auth_token).send({ title });
         const file_id = res.body.id;
         const buffer = Buffer.from("test data file", 'utf8');
         await chai.request(app).post("/api/files/" + file_id)
+            .set("Authorization", auth_token)
             .type('form')
             .attach('uploaded_file', buffer, 'test.txt')
         
@@ -100,7 +112,7 @@ describe('Api connection', () => {
         expect(resGet.headers["content-disposition"]).is.equal('attachment; filename="test.txt"');
         expect(resGet.headers["content-type"]).is.equal('application/octet-stream');
 
-        await chai.request(app).delete("/api/files/" + file_id);    
+        await chai.request(app).delete("/api/files/" + file_id).set("Authorization", auth_token);    
     });
 
     after(() => {
