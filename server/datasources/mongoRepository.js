@@ -23,18 +23,18 @@ class MongoRepository extends RepositoryBase {
 
     async getAllFiles() {
         const all_files = await this._model.find({is_deleted: false}).exec();
-        return all_files;
+        return all_files.map(MongoRepository.makeFileObject);
     }
 
     async getFileById(id) {
         const file = await this._model.findById(id).exec();
-        return file;
+        return MongoRepository.makeFileObject(file);
     }
 
     async addFile(title) {
         const file = new this._model({title});
         const data = await file.save();
-        return data;
+        return MongoRepository.makeFileObject(data);
     }
 
     async uploadFile(id, real_filename, filename) {
@@ -43,7 +43,7 @@ class MongoRepository extends RepositoryBase {
         file.filename = filename;
         file.date_upload = Date.now();
         const data = await file.save();
-        return data;
+        return MongoRepository.makeFileObject(data);
     }
 
     async deleteFile(id) {
@@ -56,6 +56,16 @@ class MongoRepository extends RepositoryBase {
     disconnect(){
         mongoose.disconnect();
     }    
+
+
+    static makeFileObject({ title, real_filename, filename, is_deleted, date_upload, date_deleted, _id, date_add }) {
+        return {
+            id: _id,
+            title, date_add,
+            real_filename, filename, date_upload, 
+            is_deleted, date_deleted, 
+        };
+    }
 
 }
 

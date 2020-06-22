@@ -2,13 +2,13 @@ const repository = require('../datasources/repositoryManager');
 
 async function getAllFiles(req, res, next) {
     const allFiles = await repository.getRepository().getAllFiles();
-    res.json(allFiles);
+    res.json(allFiles.map(compactFileObject));
 }
 
 async function getFileInfo(req, res, next) {
     var file_id = req.params.file_id;
     const file = await repository.getRepository().getFileById(file_id);
-    res.json(file);
+    res.json(compactFileObject(file));
 }
 
 async function addFile({ body: { title = null } } = {}, res, next) {
@@ -16,8 +16,8 @@ async function addFile({ body: { title = null } } = {}, res, next) {
         next("title is empty");
         return;
     }
-    const allFiles = await repository.getRepository().addFile(title);
-    res.json(allFiles);
+    const data = await repository.getRepository().addFile(title);
+    res.json(compactFileObject(allFiles));
 }
 
 async function deleteFile(req, res, next) {
@@ -27,11 +27,21 @@ async function deleteFile(req, res, next) {
 }
 
 async function uploadFile(req, res, next) {
-    // TODO: add catch
     var file_id = req.params.file_id;
     const { originalname, filename } = req.file;
-    await repository.getRepository().uploadFile(file_id, filename, originalname);
-    res.json({ "status": "ok" });
+    const data = await repository.getRepository().uploadFile(file_id, filename, originalname);
+    res.json(compactFileObject(data));
+}
+
+function compactFileObject({id, title, date_add, real_filename, filename, date_upload, is_deleted, date_deleted}) {
+    let result = {id, title, date_add};
+    if (date_upload !== null) {
+        result = {...result, real_filename, filename, date_upload};
+    }
+    if (is_deleted) {
+        result = {...result, is_deleted, date_deleted};
+    }
+    return result;
 }
 
 module.exports = {
