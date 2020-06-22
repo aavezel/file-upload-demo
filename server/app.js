@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 
 const indexRouter = require('./routes/index');
 const apiRouter = require('./routes/api');
+const getFileRouter = require("./routes/file");
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(cookieParser());
 
 app.use('/', indexRouter);
 app.use('/api', apiRouter);
+app.use('/file', getFileRouter);
 
 
 

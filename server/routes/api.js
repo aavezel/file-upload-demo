@@ -6,9 +6,9 @@ const multer = require('multer');
 const upload = multer({ dest: config.upload_file_path, limits: { fileSize: 1024 * 1024, files: 1 } });
 
 const { getAllFiles, getFileInfo, addFile, deleteFile, uploadFile } = require("../controllers/apiController");
-const { validateFileExist, validationAs404, validationAs422 } = require('../checkers/fileCheckers');
 
 const { body, check } = require('express-validator');
+const { validateFileExist, validationAs404, validationAs422 } = require('../checkers/fileCheckers');
 
 router.route('/')
   .get(getAllFiles)
