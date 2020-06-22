@@ -27,6 +27,9 @@ class MongoRepository extends RepositoryBase {
     }
 
     async getFileById(id) {
+        if (!mongoose.isValidObjectId(id)) {
+            return null;
+        }
         const file = await this._model.findById(id).exec();
         if (file === null) return null;
         return MongoRepository.makeFileObject(file);
@@ -40,6 +43,9 @@ class MongoRepository extends RepositoryBase {
 
     async uploadFile(id, real_filename, filename) {
         const file = await this._model.findById(id).exec();
+        if (file.is_deleted) {
+            throw new Error("Task already is deleted");
+        }
         file.real_filename = real_filename;
         file.filename = filename;
         file.date_upload = Date.now();

@@ -1,6 +1,9 @@
 const repository = require('../datasources/repositoryManager');
 const { validationResult } = require('express-validator');
 
+/**
+ * Проверка на наличие file_id в репозитории
+ */
 async function validateFileExist(file_id) {
     try {
         const file = await repository.getRepository().getFileById(file_id);
@@ -13,6 +16,9 @@ async function validateFileExist(file_id) {
     }
 }
 
+/**
+ * Обертка для обработчиков ошибок
+ */
 function validationAsHttpCode(httpCode) {
     return function (req, res, next) {
         const errors = validationResult(req);
