@@ -14,13 +14,13 @@ function checkAuth(req, res, next) {
         return;
     }
     try {
-        const data = jwt.verify(token, jwt_secret);    
+        const data = jwt.verify(token, jwt_secret);
         next();
-    } 
+    }
     catch {
         res.status(401).send("Unauthorized");
         return;
-    }    
+    }
 }
 
 /**

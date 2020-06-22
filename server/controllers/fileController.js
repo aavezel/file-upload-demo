@@ -10,13 +10,13 @@ async function getFileData(req, res, next) {
     if (file === null) {
         return next();
     }
-    const {real_filename, filename} = file;
+    const { real_filename, filename } = file;
     if (real_filename === null) {
         return next();
     }
 
     res.download("/" + real_filename, filename, {
-        root: config.upload_file_path,        
+        root: config.upload_file_path,
     })
 }
 
