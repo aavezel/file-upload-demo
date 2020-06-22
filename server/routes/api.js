@@ -2,17 +2,28 @@ const express = require('express');
 const router = express.Router();
 
 const config = require("../config");
-const multer  = require('multer');
-const upload = multer({dest: config.upload_file_path, limits: {fileSize: 1024*1024, files: 1 } });
+const multer = require('multer');
+const upload = multer({ dest: config.upload_file_path, limits: { fileSize: 1024 * 1024, files: 1 } });
 
 const { getAllFiles, getFileInfo, addFile, deleteFile, uploadFile } = require("../controllers/fileController");
+const { validateFileExist } = require('../checkers/fileCheckers');
 
+const { body, check } = require('express-validator');
 
 router.route('/')
   .get(getAllFiles)
-  .put(addFile)
+  .put(
+    [body("title").exists().withMessage("Title is empty")],
+    addFile
+  )
 
 router.route('/files/:file_id')
+  .all(
+    [
+      check("file_id")
+        .custom(validateFileExist).withMessage("File not found"),
+    ]
+  )
   .get(getFileInfo)
   .post(upload.single('uploaded_file'), uploadFile)
   .delete(deleteFile);
