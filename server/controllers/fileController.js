@@ -1,3 +1,5 @@
+const repository = require('../datasources/repositoryManager');
+
 async function getAllFiles(req, res, next) {
     const allFiles = await repository.getRepository().getAllFiles();
     res.json(allFiles);

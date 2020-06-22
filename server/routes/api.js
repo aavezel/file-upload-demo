@@ -1,4 +1,3 @@
-const repository = require('../datasources/repositoryManager');
 const express = require('express');
 const router = express.Router();
 
