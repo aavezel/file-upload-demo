@@ -5,7 +5,7 @@ const path = require("path");
 
 
 async function getFileData(req, res, next) {
-    const { params: { file_id } } = req;
+    const file_id = req.url.slice(1);
     const file = await repository.getRepository().getFileById(file_id);
     if (file === null) {
         return next();

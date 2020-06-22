@@ -86,6 +86,23 @@ describe('Api connection', () => {
 
     });
 
+    it('test download', async () => {
+        const title = 'test file ' + Date.now();        
+        const res = await chai.request(app).put("/api").send({ title });
+        const file_id = res.body.id;
+        const buffer = Buffer.from("test data file", 'utf8');
+        await chai.request(app).post("/api/files/" + file_id)
+            .type('form')
+            .attach('uploaded_file', buffer, 'test.txt')
+        
+        const resGet = await chai.request(app).post("/file/" + file_id);
+        expect(resGet).to.have.status(200);
+        expect(resGet.headers["content-disposition"]).is.equal('attachment; filename="test.txt"');
+        expect(resGet.headers["content-type"]).is.equal('application/octet-stream');
+
+        await chai.request(app).delete("/api/files/" + file_id);    
+    });
+
     after(() => {
         RepositoryManager.getRepository().disconnect();
     });    

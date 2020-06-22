@@ -7,18 +7,23 @@ const { check } = require('express-validator');
 const { validateFileExist, validationAs404 } = require('../checkers/fileCheckers');
 
 
-router.route('/:file_id').get(
-    getFileData
-);
+router.use(getFileData);
 
-/* 404 */
 router.use(error404);
+router.use(error500);
 
 module.exports = router;
 
 
 /*-------------------------*/
 function error404(req, res, next) {
-    res.status(404).send("File not found");
+    res.status(404).send("File not found!");
     next();
 }  
+
+
+function error500(err, req, res, next) {
+    console.log("ERROR:", err); // TODO: use logger 
+    res.status(500).send("File not found");
+    next(err);
+  }
