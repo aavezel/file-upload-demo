@@ -8,14 +8,13 @@ describe('MongoRepository', () => {
 
     before(() => {
         RepositoryManager.init({
-            provider : "mongodb",
-            mongodb: {    
+            provider: "mongodb",
+            mongodb: {
                 url: "mongodb://root:example@localhost:27017",
                 options: { useNewUrlParser: true, useUnifiedTopology: true, dbName: "file-upload-demo", }
             }
         });
-
-    }) 
+    });    
 
     it('workflow', async () => {
         const title = 'test file ' + Date.now();
@@ -49,8 +48,7 @@ describe('MongoRepository', () => {
     
         await RepositoryManager.getRepository().deleteFile(file.id);        
         const fileAfterDelete = await RepositoryManager.getRepository().getFileById(file.id);
-        expect(fileAfterDelete, "Fail delete file").to.have.property("is_deleted").that.is.true;
-        expect(fileAfterDelete, "Fail delete file").to.have.property("date_deleted").that.is.not.null;
+        expect(fileAfterDelete, "Fail delete file").that.is.null;
 
         const allFilesAfterDelete = await RepositoryManager.getRepository().getAllFiles();
         const afterDelete = allFilesAfterDelete.filter(f => f.title == title );
@@ -78,6 +76,6 @@ describe('MongoRepository', () => {
 
     after(() => {
         RepositoryManager.getRepository().disconnect();
-    })
-    
+    });    
+
 });

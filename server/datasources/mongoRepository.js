@@ -8,17 +8,23 @@ class MongoRepository extends RepositoryBase {
         super();
         mongoose.connect(url, options);
 
-        const fileSchema = new Schema({
-            title: { type: String, default: "" },
-            real_filename: { type: String, default: null },
-            filename: { type: String, default: null },
-            is_deleted: { type: Boolean, default: false },
-            date_add: { type: Date, default: Date.now },
-            date_upload: { type: Date, default: null },
-            date_deleted: { type: Date, default: null },
-        });
+        try {
+            this._model = mongoose.model('File')
+        } 
+        catch {
+            const fileSchema = new Schema({
+                title: { type: String, default: "" },
+                real_filename: { type: String, default: null },
+                filename: { type: String, default: null },
+                is_deleted: { type: Boolean, default: false },
+                date_add: { type: Date, default: Date.now },
+                date_upload: { type: Date, default: null },
+                date_deleted: { type: Date, default: null },
+            });
+    
+            this._model = mongoose.model('File', fileSchema);    
+        }
 
-        this._model = mongoose.model('File', fileSchema);
     }
 
     async getAllFiles() {
@@ -32,6 +38,7 @@ class MongoRepository extends RepositoryBase {
         }
         const file = await this._model.findById(id).exec();
         if (file === null) return null;
+        if (file.is_deleted === true) return null;
         return MongoRepository.makeFileObject(file);
     }
 
