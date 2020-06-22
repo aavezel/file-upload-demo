@@ -12,6 +12,9 @@ const upload = multer({dest: config.upload_file_path, limits: {fileSize: 1024*10
 router.route('/')
   .get(getAllFiles)
   .put(addFile)
+
+router.route('/files/:file_id')
+  .get(getFileInfo)
   .post(upload.single('uploaded_file'), uploadFile)
   .delete(deleteFile);
 
@@ -32,6 +35,12 @@ async function getAllFiles(req, res, next) {
   res.json(allFiles);
 }
 
+async function getFileInfo(req, res, next) {
+  var file_id = req.params.file_id;
+  const file = await repository.getRepository().getFileById(file_id);
+  res.json(file);
+}
+
 async function addFile({body: {title = null}} = {}, res, next) {  
   if (title === null) {
     next("title is empty");
@@ -42,24 +51,16 @@ async function addFile({body: {title = null}} = {}, res, next) {
 }
 
 async function deleteFile(req, res, next) {
-  const { id = null } = req.body || {}
-  if (id === null) {
-    next("id is empty");
-    return;
-  }
-  await repository.getRepository().deleteFile(id);
+  var file_id = req.params.file_id;
+  await repository.getRepository().deleteFile(file_id);
   res.json({"status": "ok"});
 }
 
 async function uploadFile(req, res, next) {  
   // TODO: add catch
-  const { id = null } = req.body || {}
-  if (id === null) {
-    next("id is empty");
-    return;
-  }
+  var file_id = req.params.file_id;
   const {originalname, filename} = req.file;
-  await repository.getRepository().uploadFile(id, filename, originalname);
+  await repository.getRepository().uploadFile(file_id, filename, originalname);
   res.json({"status": "ok"});
 }
 

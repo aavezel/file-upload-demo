@@ -26,6 +26,11 @@ class MongoRepository extends RepositoryBase {
         return all_files;
     }
 
+    async getFileById(id) {
+        const file = await this._model.findById(id).exec();
+        return file;
+    }
+
     async addFile(title) {
         const file = new this._model({title});
         const data = await file.save();
