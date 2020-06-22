@@ -6,7 +6,7 @@ const multer = require('multer');
 const upload = multer({ dest: config.upload_file_path, limits: { fileSize: 1024 * 1024, files: 1 } });
 
 const { getAllFiles, getFileInfo, addFile, deleteFile, uploadFile } = require("../controllers/fileController");
-const { validateFileExist } = require('../checkers/fileCheckers');
+const { validateFileExist, validationAs404, validationAs422 } = require('../checkers/fileCheckers');
 
 const { body, check } = require('express-validator');
 
@@ -14,6 +14,7 @@ router.route('/')
   .get(getAllFiles)
   .put(
     [body("title").exists().withMessage("Title is empty")],
+    validationAs422,
     addFile
   )
 
@@ -22,7 +23,8 @@ router.route('/files/:file_id')
     [
       check("file_id")
         .custom(validateFileExist).withMessage("File not found"),
-    ]
+    ],
+    validationAs404
   )
   .get(getFileInfo)
   .post(upload.single('uploaded_file'), uploadFile)

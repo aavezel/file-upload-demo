@@ -1,4 +1,5 @@
 const repository = require('../datasources/repositoryManager');
+const { validationResult } = require('express-validator');
 
 async function validateFileExist(file_id) {
     try {
@@ -12,6 +13,26 @@ async function validateFileExist(file_id) {
     }
 }
 
+function validationAsHttpCode(httpCode) {
+    return function (req, res, next) {
+        const errors = validationResult(req);
+        if (errors.isEmpty()) {
+            return next();
+        }
+        res.status(httpCode).json(formatErrors(errors));
+    }
+}
+
+const validationAs404 = validationAsHttpCode(404);
+const validationAs422 = validationAsHttpCode(422);
+
+function formatErrors(errs) {
+    const errors = errs.array().map(e => e.msg)
+    return { errors };
+}
+
 module.exports = {
-    validateFileExist
+    validateFileExist,
+    validationAs404,
+    validationAs422,
 }
