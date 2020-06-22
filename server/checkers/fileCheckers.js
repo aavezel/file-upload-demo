@@ -1,5 +1,27 @@
 const repository = require('../datasources/repositoryManager');
 const { validationResult } = require('express-validator');
+const jwt = require("jsonwebtoken");
+const { jwt_secret } = require("../config");
+
+/**
+ * Проверка авторизации
+ */
+function checkAuth(req, res, next) {
+    const { authorization = "" } = req.headers;
+    const [head, token] = authorization.split(" ");
+    if (head != "Bearer") {
+        res.status(401).send("Unauthorized");
+        return;
+    }
+    try {
+        const data = jwt.verify(token, jwt_secret);    
+        next();
+    } 
+    catch {
+        res.status(401).send("Unauthorized");
+        return;
+    }    
+}
 
 /**
  * Проверка на наличие file_id в репозитории
@@ -38,6 +60,7 @@ function formatErrors(errs) {
 }
 
 module.exports = {
+    checkAuth,
     validateFileExist,
     validationAs404,
     validationAs422,

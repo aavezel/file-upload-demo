@@ -12,6 +12,8 @@ config.mongodb = {
 
 config.upload_file_path = process.env.UPLOAD_FILE_PATH || "/etc/server_files";
 
+config.jwt_secret = process.env.JWT_SECRET || "secret";
+
 config.server = {
     port: normalizePort(process.env.PORT || '8888 '),
 };
