@@ -1,60 +1,58 @@
 <template>
-  <v-app>
-    <v-app-bar
-      app
-      color="primary"
-      dark
-    >
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
+    <v-app id="inspire">
+        <v-navigation-drawer v-model="drawer" :clipped="$vuetify.breakpoint.lgAndUp" app>
+            <v-list dense>
+                <v-list-item v-for="page in pages" :key="page.title" :to="page.to">
+                    <v-list-item-action>
+                        <v-icon>{{ page.icon }}</v-icon>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                        <v-list-item-title>
+                            {{ page.title }}
+                        </v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+            </v-list>
+        </v-navigation-drawer>
 
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
-      </div>
-
-      <v-spacer></v-spacer>
-
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
-    </v-app-bar>
-
-    <v-content>
-      <HelloWorld/>
-    </v-content>
-  </v-app>
+        <v-app-bar :clipped-left="$vuetify.breakpoint.lgAndUp" app color="blue darken-3" dark>
+            <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+            <v-toolbar-title style="width: 300px" class="ml-0 pl-4">
+                <span class="hidden-sm-and-down">File storage</span>
+            </v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-text-field
+                flat
+                solo-inverted
+                hide-details
+                prepend-inner-icon="mdi-magnify"
+                label="Search"
+                class="hidden-sm-and-down"
+            ></v-text-field>
+        </v-app-bar>
+        <v-main>
+            <v-container fluid>
+                <router-view></router-view>
+            </v-container>
+        </v-main>
+        <v-btn bottom color="pink" dark fab fixed right @click="dialog = !dialog">
+            <v-icon>mdi-plus</v-icon>
+        </v-btn>
+    </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld';
-
 export default {
-  name: 'App',
-
-  components: {
-    HelloWorld,
-  },
-
-  data: () => ({
-    //
-  }),
+    props: {
+        source: String,
+    },
+    data: () => ({
+        dialog: false,
+        drawer: null,
+        pages: [
+            {title: 'Files', icon: 'storage', to: '/'},
+            {title: 'About', icon: 'info', to: '/about'},
+        ],
+    }),
 };
 </script>
