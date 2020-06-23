@@ -28,6 +28,8 @@
                 prepend-inner-icon="mdi-magnify"
                 label="Search"
                 class="hidden-sm-and-down"
+                v-model="filter"
+                v-if="isHome"
             ></v-text-field>
         </v-app-bar>
         <v-main>
@@ -35,7 +37,7 @@
                 <router-view></router-view>
             </v-container>
         </v-main>
-        <v-btn bottom color="pink" dark fab fixed right @click="dialog = !dialog">
+        <v-btn bottom color="pink" dark fab fixed right :to='{name: "AddFile"}' v-if="isHome">
             <v-icon>mdi-plus</v-icon>
         </v-btn>
     </v-app>
@@ -49,10 +51,22 @@ export default {
     data: () => ({
         dialog: false,
         drawer: null,
+        filter: '',
         pages: [
             {title: 'Files', icon: 'storage', to: '/'},
             {title: 'About', icon: 'info', to: '/about'},
         ],
     }),
+    computed: {
+        isHome() {
+            return this.$route.name === "Home";
+        },
+
+    },
+    watch: {
+        filter: (val) => {
+            console.log(val);
+        }
+    }
 };
 </script>

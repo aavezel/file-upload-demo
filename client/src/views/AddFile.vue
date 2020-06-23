@@ -3,7 +3,7 @@
         <v-layout align-center justify-center fill-height>
             <v-flex xs12>
                 <h3>Add new file:</h3>
-                <v-form v-model="valid" ref="form" :lazy-validation="true">
+                <v-form v-model="valid" ref="form">
                     <v-text-field v-model="title" :rules="titleRules" label="File title" required></v-text-field>
                     <v-btn :disabled="!valid" color="success" class="mr-4" @click="submit">
                         Add
@@ -15,8 +15,6 @@
 </template>
 
 <script>
-//import {mapState} from 'vuex';
-
 export default {
     name: 'AddFile',
     data() {
@@ -31,6 +29,7 @@ export default {
     },
     methods: {
         submit() {
+            this.$router.push({name: "Home"})
         },
     },
     computed: {},

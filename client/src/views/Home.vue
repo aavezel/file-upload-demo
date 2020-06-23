@@ -14,11 +14,20 @@
                                 </v-list-item-subtitle>
                             </v-list-item-content>
                             <v-list-item-action class="d-flex flex-row ">
-                                <v-btn color="green darken-1" icon v-if="file.filename == null">
+                                <v-btn
+                                    color="green darken-1"
+                                    icon
+                                    v-if="file.filename == null"
+                                    :to="{name: 'UploadFile', params: {file_id: file.id}}"
+                                >
                                     <v-icon>cloud_upload</v-icon>
                                 </v-btn>
-                                <v-btn color="indigo darken-2" icon v-else><v-icon>cloud_download</v-icon></v-btn>
-                                <v-btn color="red darken-2" icon><v-icon>delete_forever</v-icon></v-btn>
+                                <v-btn color="indigo darken-2" icon v-else @click="download(file.id)"
+                                    ><v-icon>cloud_download</v-icon></v-btn
+                                >
+                                <v-btn color="red darken-2" icon @click="delete_file(file.id)"
+                                    ><v-icon>delete_forever</v-icon></v-btn
+                                >
                             </v-list-item-action>
                         </v-list-item>
                         <v-divider v-if="index + 1 < files.length" :key="index"></v-divider>
@@ -47,6 +56,14 @@ export default {
             if (value == null) return '';
             const date = new Date(value);
             return prefix + date.toLocaleString();
+        },
+    },
+    methods: {
+        download(file) {
+            console.log('download', file);
+        },
+        delete_file(file) {
+            console.log('delete', file);
         },
     },
 };

@@ -23,7 +23,7 @@ Vue.use(VueRouter)
   },
   {
     path: '/upload/:file_id',
-    name: 'AddFile',
+    name: 'UploadFile',
     component: () => import(/* webpackChunkName: "about" */ '../views/UploadFile.vue')
   },
   { path: "*", component: PageNotFound }
