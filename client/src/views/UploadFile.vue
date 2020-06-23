@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import {mapState} from 'vuex';
+import {mapState, mapActions} from 'vuex';
 
 export default {
     name: 'UploadFile',
@@ -53,12 +53,17 @@ export default {
     },
     methods: {
         submit() {
-            console.log(this.file);
+            const payload = { id: this.file_id, file: this.file }
+            this.upload_file( payload );
+            this.$router.push({name: 'Home'});
         },
         change_files(file) {
             this.valid = file != undefined;
             this.file = file;
-        }
+        },
+        ...mapActions({
+            upload_file: 'UPLOAD_FILE',
+        }),        
     },
     filters: {},
 };

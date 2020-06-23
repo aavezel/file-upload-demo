@@ -1,42 +1,39 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import apiService from './apiSerivice';
+import dummyService from './dummyService';
 
 Vue.use(Vuex)
+
+const datastore = process.env.VUE_APP_STORE_MODE == "DUMMY" ? new dummyService() : new apiService();
 
 export default new Vuex.Store({
   state: {
     files: [
-      {
-        "id": "5ef1a88bdc0994001dc508a5",
-        "title": "test file first",
-        "date_add": "2020-06-23T07:00:27.243Z"
-      },
-      {
-        "id": "5ef1a88cdc0994001dc508a6",
-        "title": "file 2",
-        "date_add": "2020-06-23T07:00:28.057Z",
-        "real_filename": "2211505e5e6a75de0c49d3e180376acb",
-        "filename": "test1.txt",
-        "date_upload": "2020-06-23T07:00:51.267Z"
-      },
-      {
-        "id": "5ef1a88cdc0994001dc508a7",
-        "title": "second data file",
-        "date_add": "2020-06-23T07:00:28.772Z",
-        "real_filename": "4ed3557142e5f120130aa06660c7e9dc",
-        "filename": "test2_data.txt",
-        "date_upload": "2020-06-23T07:01:08.318Z"
-      },
-      {
-        "id": "5ef1a88ddc0994001dc508a8",
-        "title": "unload file",
-        "date_add": "2020-06-23T07:00:29.398Z"
-      }
     ]
   },
   mutations: {
+    SET_FILES(state, value) {
+      state.files = value
+    }
   },
   actions: {
+    async LOAD_FILES_LIST({ commit }) {
+      const data = await datastore.getAllFiles();
+      commit("SET_FILES", data);
+    },
+    async ADD_FILE({ dispatch }, title) {
+      await datastore.newFile(title);
+      dispatch("LOAD_FILES_LIST");
+    },
+    async UPLOAD_FILE({ dispatch }, {id, file}) {
+      await datastore.uploadFile(id, file);
+      dispatch("LOAD_FILES_LIST");
+    },
+    async DELETE_FILE({ dispatch }, id) {
+      await datastore.deleteFile(id);
+      dispatch("LOAD_FILES_LIST");
+    },
   },
   modules: {
   }

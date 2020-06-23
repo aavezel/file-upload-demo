@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import {mapState} from 'vuex';
+import {mapState, mapActions} from 'vuex';
 
 export default {
     name: 'Home',
@@ -62,9 +62,12 @@ export default {
         download(file) {
             console.log('download', file);
         },
-        delete_file(file) {
-            console.log('delete', file);
+        delete_file(file_id) {
+            this.delete_file_action(file_id);
         },
+        ...mapActions({
+            delete_file_action: 'DELETE_FILE',
+        }),             
     },
 };
 </script>

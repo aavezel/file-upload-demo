@@ -10,5 +10,10 @@ new Vue({
   vuetify,
   store,
   router,
-  render: h => h(App)
+  render: h => h(App),
+  beforeCreate() {
+    store.dispatch("LOAD_FILES_LIST");
+  }
 }).$mount('#app')
+
+

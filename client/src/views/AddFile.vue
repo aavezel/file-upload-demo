@@ -15,6 +15,8 @@
 </template>
 
 <script>
+import {mapActions} from 'vuex';
+
 export default {
     name: 'AddFile',
     data() {
@@ -28,9 +30,13 @@ export default {
         };
     },
     methods: {
-        submit() {
-            this.$router.push({name: "Home"})
+        async submit() {
+            await this.add_file(this.title);            
+            this.$router.push({name: 'Home'});
         },
+        ...mapActions({
+            add_file: 'ADD_FILE',
+        }),
     },
     computed: {},
     filters: {},
