@@ -22,22 +22,23 @@ services:
     env_file: 
       - ./.env
 
-      # api:
-  #   image: node:10-alpine
-  #   restart: on-failure
-  #   links:
-  #     - mongo
-  #   ports:
-  #     - 8888:8888
-  #   environment:
-  #     - PORT=8888
-  #   env_file: 
-  #     - ./.env
-  #   volumes:
-  #     - ./server:/usr/src/app
-  #   working_dir: /usr/src/app
-  #   # entrypoint: node ./bin/www
-  #   entrypoint: npm run dev
+  api:
+    image: node:10-alpine
+    restart: on-failure
+    links:
+      - mongo
+    ports:
+      - 8888:8888
+    environment:
+      - PORT=8888
+    env_file: 
+      - ./.env
+    volumes:
+      - ./server:/usr/src/app
+      - ./files:/etc/server_files
+    working_dir: /usr/src/app
+    #entrypoint: node ./bin/www
+    entrypoint: npm run dev
 
   # web:
   #   image: nginx:alpine

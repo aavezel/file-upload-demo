@@ -13,7 +13,7 @@ describe('Api connection', () => {
         RepositoryManager.init({
             provider: "mongodb",
             mongodb: {
-                url: "mongodb://root:example@localhost:27017",
+                url: "mongodb://root:example@mongo:27017",
                 options: { useNewUrlParser: true, useUnifiedTopology: true, dbName: "file-upload-demo", }
             }
         });
