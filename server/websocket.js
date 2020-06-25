@@ -7,19 +7,21 @@ const {
     uploadFile,
 } = require("./controllers/apiController");
 
-const {validateFileExist} = require("./checkers/fileCheckers");
+const { validateFileExist } = require("./checkers/fileCheckers");
+const jwt = require("jsonwebtoken");
+const { jwt_secret } = require("./config");
 
 
 class WSRouter {
 
     constructor(ws) {
+        this.is_auth = false;
         this.ws = ws;
         this.res = {
             json(data) {
-                console.log(data);
                 ws.send(JSON.stringify(data));
             }
-        }        
+        }
     }
 
     async _checkFileId(data) {
@@ -29,6 +31,18 @@ class WSRouter {
         return { params: { file_id } };
     }
 
+    async auth(data) {
+        try {
+            const { token } = data;
+            jwt.verify(token, jwt_secret);
+            this.is_auth = true;
+            this.res.json({ status: "ok" })
+        }
+        catch
+        {
+            this.res.json({ error: "Authorization failed" })
+        }
+    }
 
     async getAllFiles() {
         await getAllFiles(null, this.res);
@@ -65,18 +79,24 @@ function initWebSocketServer(server) {
         ws.on('message', async (message) => {
 
             try {
-                const { method, data } = JSON.parse(message);                
+                const { method, data } = JSON.parse(message);
+
+                if (method != "auth" && !router.is_auth) {
+                    ws.send(`{ "error": "Authorization is needed" }`);
+                    return;
+                }
+
                 if (method in router && typeof router[method] == "function") {
                     await router[method](data);
                 }
                 else {
-                    ws.send(`{ error: "Method not found" }`);
+                    ws.send(`{ "error": "Method not found" }`);
                 }
 
-                
-            } catch (e) {
-                console.log(e);
-                ws.send(`{ error: "" }`);
+
+            } catch (err) {
+                console.log("ERROR:", err); // TODO: use logger 
+                ws.send(`{ "error": "Server error" }`);
             }
 
         });
