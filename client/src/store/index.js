@@ -26,13 +26,16 @@ export default new Vuex.Store({
       await datastore.newFile(title);
       dispatch("LOAD_FILES_LIST");
     },
-    async UPLOAD_FILE({ dispatch }, {id, file}) {
+    async UPLOAD_FILE({ dispatch }, { id, file }) {
       await datastore.uploadFile(id, file);
       dispatch("LOAD_FILES_LIST");
     },
     async DELETE_FILE({ dispatch }, id) {
       await datastore.deleteFile(id);
       dispatch("LOAD_FILES_LIST");
+    },
+    async DOWNLOAD_FILE(obj, id) {
+      datastore.download(id);
     },
   },
   modules: {

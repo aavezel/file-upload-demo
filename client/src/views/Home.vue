@@ -67,7 +67,8 @@ export default {
         },
         ...mapActions({
             delete_file_action: 'DELETE_FILE',
-        }),             
+            download_file_action: 'DOWNLOAD_FILE',
+        }),
     },
 };
 </script>

@@ -71,6 +71,10 @@ class dumpService {
         return { "status": "ok" };
     }
 
+    download(id) {
+        console.log("Download file: ", id);
+    }
+
     _getUId = function () {
         var timestamp = (new Date().getTime() / 1000 | 0).toString(16);
         return timestamp + 'xxxxxxxxxxxxxxxx'.replace(/[x]/g, function () {
