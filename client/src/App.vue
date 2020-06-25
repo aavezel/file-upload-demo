@@ -37,13 +37,16 @@
                 <router-view></router-view>
             </v-container>
         </v-main>
-        <v-btn bottom color="pink" dark fab fixed right :to='{name: "AddFile"}' v-if="isHome">
+        <v-btn bottom color="pink" dark fab fixed right :to="{name: 'AddFile'}" v-if="isHome">
             <v-icon>mdi-plus</v-icon>
         </v-btn>
     </v-app>
 </template>
 
 <script>
+import debounce from 'lodash.debounce';
+import {mapState, mapMutations} from 'vuex';
+
 export default {
     props: {
         source: String,
@@ -51,22 +54,34 @@ export default {
     data: () => ({
         dialog: false,
         drawer: null,
-        filter: '',
         pages: [
             {title: 'Files', icon: 'storage', to: '/'},
             {title: 'About', icon: 'info', to: '/about'},
         ],
     }),
-    computed: {
-        isHome() {
-            return this.$route.name === "Home";
-        },
-
+    methods: {
+        setFilesFilterThrottle: debounce(function(new_filter) {
+            this.setFilesFilter(new_filter);
+        }, 500),
+        ...mapMutations({
+            setFilesFilter: 'SET_FILES_FILTER',
+        }),
     },
-    watch: {
-        filter: (val) => {
-            console.log(val);
-        }
-    }
+    computed: {
+        filter: {
+            get() {
+                return this.store_filter;
+            },
+            set(value) {
+                this.setFilesFilterThrottle(value);
+            },
+        },
+        isHome() {
+            return this.$route.name === 'Home';
+        },
+        ...mapState({
+            store_filter: (state) => state.files_filter,
+        }),
+    },
 };
 </script>

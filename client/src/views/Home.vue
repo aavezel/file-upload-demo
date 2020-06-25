@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import {mapState, mapActions} from 'vuex';
+import {mapGetters, mapActions} from 'vuex';
 
 export default {
     name: 'Home',
@@ -47,8 +47,8 @@ export default {
         return {};
     },
     computed: {
-        ...mapState({
-            files: (state) => state.files,
+        ...mapGetters({
+            files: 'filtred_files',
         }),
     },
     filters: {
