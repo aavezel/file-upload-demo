@@ -17,6 +17,10 @@ config.server = {
     port: normalizePort(process.env.PORT || '8888 '),
 };
 
+config.cors_option = {
+    origin: process.env.CORS_ORIGIN || '*'
+}
+
 
 module.exports = config;
 

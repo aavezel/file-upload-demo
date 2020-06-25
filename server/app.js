@@ -7,8 +7,9 @@ const indexRouter = require('./routes/index');
 const apiRouter = require('./routes/api');
 const authRouter = require('./routes/auth');
 const getFileRouter = require("./routes/file");
-const cors = require('cors')
 
+const {cors_option} = require("./config");
+const cors = require('cors')
 
 const app = express();
 
@@ -18,7 +19,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use(cookieParser());
-app.use(cors());
+app.use(cors(cors_option));
 
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
