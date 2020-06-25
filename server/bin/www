@@ -5,6 +5,7 @@
  */
 
 const app = require('../app');
+const initWebSocketServer = require('../websocket');
 const config = require('../config');
 const debug = require('debug')('server:server');
 const http = require('http');
@@ -20,6 +21,7 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
+initWebSocketServer(server);
 
 /**
  * Listen on provided port, on all network interfaces.

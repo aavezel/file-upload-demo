@@ -1,29 +1,29 @@
 const repository = require('../datasources/repositoryManager');
 
-async function getAllFiles(req, res, next) {
+async function getAllFiles(req, res) {
     const allFiles = await repository.getRepository().getAllFiles();
     return res.json(allFiles.map(compactFileObject));
 }
 
-async function getFileInfo(req, res, next) {
+async function getFileInfo(req, res) {
     const { params: { file_id } } = req;
     const file = await repository.getRepository().getFileById(file_id);
     return res.json(compactFileObject(file));
 }
 
-async function addFile(req, res, next) {
+async function addFile(req, res) {
     const { body: { title } } = req;
     const data = await repository.getRepository().addFile(title);
     return res.json(compactFileObject(data));
 }
 
-async function deleteFile(req, res, next) {
+async function deleteFile(req, res) {
     const { params: { file_id } } = req;
     await repository.getRepository().deleteFile(file_id);
     return res.json({ "status": "ok" });
 }
 
-async function uploadFile(req, res, next) {
+async function uploadFile(req, res) {
     const { params: { file_id } } = req;
     const { originalname, filename } = req.file;
     const data = await repository.getRepository().uploadFile(file_id, filename, originalname);
