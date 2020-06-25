@@ -1,16 +1,16 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import apiService from './apiSerivice';
-import dummyService from './dummyService';
+//import dummyService from './dummyService';
 
 Vue.use(Vuex)
 
-const datastore = process.env.VUE_APP_STORE_MODE == "DUMMY" ? new dummyService() : new apiService();
+//const datastore = process.env.VUE_APP_STORE_MODE == "DUMMY" ? new dummyService() : new apiService();
+const datastore = new apiService("http://localhost:8888/auth", "http://localhost:8888/api", "http://localhost:8888/file/");
 
 export default new Vuex.Store({
   state: {
-    files: [
-    ],
+    files: [],
     files_filter: ''
   },
   getters: {
