@@ -25,7 +25,10 @@
 git clone https://github.com/aavezel/file-upload-demo.git
 cd file-upload-demo
 cd server && npm install && cd ..
-cd client && cp .env.template .env && yarn install && yarn run build && cd ..
+cd client && cp .env.template .env && yarn install 
+# Измените ip и порт на ip сервера 
+nano .env
+yarn run build && cd ..
 cp .env.template .env
 docker-compose up
 ```
