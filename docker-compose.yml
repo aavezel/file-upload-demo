@@ -35,8 +35,8 @@ services:
       - ./server:/usr/src/app
       - ./files:/etc/server_files
     working_dir: /usr/src/app
-    #entrypoint: node ./bin/www
-    entrypoint: npm run dev
+    entrypoint: node ./bin/www
+    # entrypoint: npm run dev
 
   web:
     image: nginx:alpine
