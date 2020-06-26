@@ -21,6 +21,12 @@
                 <span class="hidden-sm-and-down">File storage</span>
             </v-toolbar-title>
             <v-spacer></v-spacer>
+            <v-btn-toggle v-model="service"  group>
+                <v-btn value="dummy">Dummy</v-btn>
+                <v-btn value="http">Http</v-btn>
+                <v-btn value="ws">WS</v-btn>
+            </v-btn-toggle>
+            <v-spacer></v-spacer>
             <v-text-field
                 flat
                 solo-inverted
@@ -48,14 +54,14 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import {mapState, mapMutations} from 'vuex';
+import {mapState, mapMutations,mapActions} from 'vuex';
 
 export default {
     props: {
         source: String,
     },
     data: () => ({
-        dialog: false,
+        dialog: false,        
         drawer: null,
         pages: [
             {title: 'Files', icon: 'storage', to: '/'},
@@ -69,6 +75,9 @@ export default {
         ...mapMutations({
             setFilesFilter: 'SET_FILES_FILTER',
         }),
+        ...mapActions({
+            makeService: "MAKE_SERVICE",
+        })
     },
     computed: {
         filter: {
@@ -79,27 +88,36 @@ export default {
                 this.setFilesFilterThrottle(value);
             },
         },
+        service: {
+            get() {
+                return this.store_service;
+            },
+            set(value) {
+                this.makeService({store: value});
+            }
+        },
         isHome() {
             return this.$route.name === 'Home';
         },
         ...mapState({
             is_loading: (state) => state.is_loading,
             store_filter: (state) => state.files_filter,
-        }),
+            store_service : (state) => state.service_name,
+        }),        
     },
 };
 </script>
 <style scoped>
-    .loading {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        padding-top: 5em;
-        text-align: center;        
-        backdrop-filter: blur(5px);
-        background: rgba(255,255,255,0.1);
-        z-index: 1000;
-    }
+.loading {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    padding-top: 5em;
+    text-align: center;
+    backdrop-filter: blur(5px);
+    background: rgba(255, 255, 255, 0.1);
+    z-index: 1000;
+}
 </style>

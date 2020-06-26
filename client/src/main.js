@@ -12,7 +12,7 @@ new Vue({
   router,
   render: h => h(App),
   beforeCreate() {
-    store.dispatch("LOADING_FILES_LIST");
+    store.dispatch("MAKE_SERVICE", {store: "dummy"});
   }
 }).$mount('#app')
 
