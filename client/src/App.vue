@@ -34,6 +34,9 @@
         </v-app-bar>
         <v-main>
             <v-container fluid>
+                <div class="loading" v-if="is_loading">
+                    <v-progress-circular indeterminate color="primary" :size="150" :width="12"></v-progress-circular>
+                </div>
                 <router-view></router-view>
             </v-container>
         </v-main>
@@ -80,8 +83,23 @@ export default {
             return this.$route.name === 'Home';
         },
         ...mapState({
+            is_loading: (state) => state.is_loading,
             store_filter: (state) => state.files_filter,
         }),
     },
 };
 </script>
+<style scoped>
+    .loading {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        padding-top: 5em;
+        text-align: center;        
+        backdrop-filter: blur(5px);
+        background: rgba(255,255,255,0.1);
+        z-index: 1000;
+    }
+</style>

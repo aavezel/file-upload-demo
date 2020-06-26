@@ -18,7 +18,8 @@ const datastore = new dummyService();
 const store = new Vuex.Store({
   state: {
     files: [],
-    files_filter: ''
+    files_filter: '',
+    is_loading: false,
   },
   getters: {
     filtred_files: state => {
@@ -32,22 +33,36 @@ const store = new Vuex.Store({
     },
     SET_FILES_FILTER(state, value) {
       state.files_filter = value
+    },
+    SET_LOADING(state, value) {
+      state.is_loading = value;
     }
   },
   actions: {
-    async LOADED_FILES_LIST({commit}, { files }) {
-      commit("SET_FILES", files)
+    SET_LOADING({commit}) {
+      commit("SET_LOADING", true);
     },
-    async LOADING_FILES_LIST() {
+    SET_LOADED({commit}) {
+      commit("SET_LOADING", false);
+    },
+    async LOADED_FILES_LIST({dispatch, commit}, { files }) {
+      commit("SET_FILES", files)
+      dispatch("SET_LOADED");
+    },
+    async LOADING_FILES_LIST({dispatch}) {
+      dispatch("SET_LOADING");
       datastore.getAllFiles();
     },
-    async ADD_FILE(store, title) {
+    async ADD_FILE({dispatch}, title) {
+      dispatch("SET_LOADING");
       await datastore.newFile(title);
     },
-    async UPLOAD_FILE(store, { id, file }) {
+    async UPLOAD_FILE({dispatch}, { id, file }) {
+      dispatch("SET_LOADING");
       await datastore.uploadFile(id, file);
     },
-    async DELETE_FILE(store, id) {
+    async DELETE_FILE({dispatch}, id) {
+      dispatch("SET_LOADING");
       await datastore.deleteFile(id);
     },
     async DOWNLOAD_FILE(obj, id) {
