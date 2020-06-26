@@ -19,8 +19,15 @@ class WSRouter {
         this.ws = ws;
         this.res = {
             json(data) {
-                ws.send(JSON.stringify(data));
-            }
+                if (Array.isArray(data)){
+                    ws.send(JSON.stringify({
+                        files: data
+                    }));
+                }
+            },
+            send(message) {
+                ws.send(JSON.stringify(message));
+            }            
         }
     }
 
@@ -36,11 +43,11 @@ class WSRouter {
             const { token } = data;
             jwt.verify(token, jwt_secret);
             this.is_auth = true;
-            this.res.json({ status: "ok" })
+            this.res.send({ auth: "ok" })
         }
         catch
         {
-            this.res.json({ error: "Authorization failed" })
+            this.res.send({ error: "Authorization failed" })
         }
     }
 
@@ -58,11 +65,13 @@ class WSRouter {
         if (title == null || title == "") throw new Error("Title empty");
         const req = { body: { title } };
         await addFile(req, this.res);
+        await this.getAllFiles();
     }
 
     async deleteFile(data) {
         const req = await this._checkFileId(data);
         await deleteFile(req, this.res);
+        await this.getAllFiles();
     }
 
 }
@@ -101,7 +110,7 @@ function initWebSocketServer(server) {
 
         });
 
-        ws.send(`{status: "connecting"}`)
+        ws.send(`{"status": "connecting"}`)
 
     });
 

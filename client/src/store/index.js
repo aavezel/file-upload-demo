@@ -1,14 +1,21 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import apiService from './apiSerivice';
+import apiWSSerivice from './apiWSSerivice';
+//import apiService from './apiSerivice';
 //import dummyService from './dummyService';
 
 Vue.use(Vuex)
 
 //const datastore = process.env.VUE_APP_STORE_MODE == "DUMMY" ? new dummyService() : new apiService();
-const datastore = new apiService("http://localhost:8888/auth", "http://localhost:8888/api", "http://localhost:8888/file/");
+//const datastore = new apiService("http://localhost:8888/auth", "http://localhost:8888/api", "http://localhost:8888/file/");
+const datastore = new apiWSSerivice(
+  "http://localhost:8888/auth",
+  "ws://localhost:8888/ws",
+  "http://localhost:8888/api/files/",
+  "http://localhost:8888/file/"
+);
 
-export default new Vuex.Store({
+const store = new Vuex.Store({
   state: {
     files: [],
     files_filter: ''
@@ -28,21 +35,20 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    async LOAD_FILES_LIST({ commit }) {
-      const data = await datastore.getAllFiles();
-      commit("SET_FILES", data);
+    async LOADED_FILES_LIST({commit}, { files }) {
+      commit("SET_FILES", files)
     },
-    async ADD_FILE({ dispatch }, title) {
+    async LOADING_FILES_LIST() {
+      datastore.getAllFiles();
+    },
+    async ADD_FILE(store, title) {
       await datastore.newFile(title);
-      dispatch("LOAD_FILES_LIST");
     },
-    async UPLOAD_FILE({ dispatch }, { id, file }) {
+    async UPLOAD_FILE(store, { id, file }) {
       await datastore.uploadFile(id, file);
-      dispatch("LOAD_FILES_LIST");
     },
-    async DELETE_FILE({ dispatch }, id) {
+    async DELETE_FILE(store, id) {
       await datastore.deleteFile(id);
-      dispatch("LOAD_FILES_LIST");
     },
     async DOWNLOAD_FILE(obj, id) {
       datastore.download(id);
@@ -50,4 +56,11 @@ export default new Vuex.Store({
   },
   modules: {
   }
-})
+});
+
+
+datastore.onFilesLoaded = (files) => {
+    store.dispatch("LOADED_FILES_LIST", { files });
+};
+
+export default store;
