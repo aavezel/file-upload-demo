@@ -1,14 +1,12 @@
 
 const MongoRepository = require("./mongoRepository");
 const config = require("../config");
-
 class RepositoryManager {
 
-    static init(config) {
-        const { provider } = config;
+    static init({ provider, mongodb }) {
         switch (provider) {
             case "mongodb":
-                RepositoryManager._instance = new MongoRepository(config.mongodb);
+                RepositoryManager._instance = new MongoRepository(mongodb);
                 break;        
             default:
                 break;
