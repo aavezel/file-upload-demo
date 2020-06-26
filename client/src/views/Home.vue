@@ -2,7 +2,10 @@
     <v-container grid-list-xl text-xs-center>
         <v-layout align-center justify-center fill-height>
             <v-flex xs12>
-                <v-list two-line>
+                <template v-if="is_empty">
+                    <h2>The files haven't been uploaded yet. Click the red plus sign at right bottom .</h2>
+                </template>
+                <v-list two-line v-else>
                     <template v-for="(file, index) in files">
                         <file-list-item :key="file.id" :file="file" />
                         <v-divider v-if="index + 1 < files.length" :key="index"></v-divider>
@@ -23,6 +26,9 @@ export default {
         return {};
     },
     computed: {
+        is_empty() {
+            return this.files.length == 0;
+        },
         ...mapGetters({
             files: 'filtred_files',
         }),
