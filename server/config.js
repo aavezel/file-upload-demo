@@ -5,20 +5,20 @@ const config = {};
 config.provider = "mongodb";
 
 config.mongodb = {
-    url: "mongodb://root:example@mongo:27017",
+    url: "mongodb://" + process.env.SERVER_MONGO_CONNECT + "@mongo:27017",
     options: { useNewUrlParser: true, useUnifiedTopology: true, dbName: "file-upload-demo", }
 };
 
-config.upload_file_path = process.env.UPLOAD_FILE_PATH || "/etc/server_files";
+config.upload_file_path = process.env.SERVER_UPLOAD_FILE_PATH || "/etc/server_files";
 
-config.jwt_secret = process.env.JWT_SECRET || "secret";
+config.jwt_secret = process.env.SERVER_JWT_SECRET || "secret";
 
 config.server = {
-    port: normalizePort(process.env.PORT || '8888 '),
+    port: normalizePort(process.env.SERVER_PORT || '8888 '),
 };
 
 config.cors_option = {
-    origin: process.env.CORS_ORIGIN || '*'
+    origin: process.env.SERVER_CORS_ORIGIN || '*'
 }
 
 

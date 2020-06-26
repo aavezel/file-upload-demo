@@ -8,13 +8,17 @@ Vue.use(Vuex)
 
 function getService(store_name) {
   if (store_name == "http") {
-    return new apiService("http://localhost:8888/auth", "http://localhost:8888/api", "http://localhost:8888/file/");
+    return new apiService(
+      process.env.VUE_APP_STORE_AUTH_URL,
+      process.env.VUE_APP_STORE_API_URL,
+      process.env.VUE_APP_STORE_DOWNLOAD_URL,
+    );
   } else if (store_name == "ws") {
     return new apiWSSerivice(
-      "http://localhost:8888/auth",
-      "ws://localhost:8888/ws",
-      "http://localhost:8888/api/files/",
-      "http://localhost:8888/file/"
+      process.env.VUE_APP_STORE_AUTH_URL,
+      process.env.VUE_APP_STORE_WS_URL,
+      process.env.VUE_APP_STORE_WS_UPLOAD_URL,
+      process.env.VUE_APP_STORE_WS_DOWNLOAD_URL,
     );
   } else {
     return new dummyService();
