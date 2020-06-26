@@ -2,7 +2,7 @@ class dumpService {
 
     _waitTimeout = 100;
     _data = [
-        {
+        /*{
             "id": "5ef1a88bdc0994001dc508a5",
             "title": "test file first",
             "date_add": "2020-06-23T07:00:27.243Z"
@@ -27,7 +27,7 @@ class dumpService {
             "id": "5ef1a88ddc0994001dc508a8",
             "title": "unload file",
             "date_add": "2020-06-23T07:00:29.398Z"
-        }
+        }*/
     ];
 
     onFilesChanged = () => {};
