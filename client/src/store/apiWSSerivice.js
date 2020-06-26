@@ -7,7 +7,7 @@ class apiWSSerivice {
     _auth_token = null;
     _is_auth = false;
     
-    onFilesLoaded = () => {};
+    onFilesChanged = () => {};
 
     constructor(auth_url, ws_url, upload_url, download_url) {
         this._auth_url = auth_url;
@@ -25,7 +25,7 @@ class apiWSSerivice {
                 this._is_auth = true;
             }
             if (data.files) {
-                this.onFilesLoaded(data.files);
+                this.onFilesChanged(data.files);
             }
         }
     }

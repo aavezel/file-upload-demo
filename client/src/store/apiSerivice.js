@@ -11,6 +11,8 @@ class apiSerivice {
     _download_url = "/file/";
     _auth_token = null;
 
+    onFilesChanged = () => {};
+
     constructor(auth_url, api_url, download_url) {
         this._api_url = api_url;
         this._auth_url = auth_url;
@@ -52,11 +54,13 @@ class apiSerivice {
 
 
     async getAllFiles() {
-        return await this.request(METHOD.GET, "/");
+        const data =  await this.request(METHOD.GET, "/");
+        this.onFilesChanged(data);
     }
 
     async newFile(title) {
-        return await this.request(METHOD.PUT, "/", { title });
+        await this.request(METHOD.PUT, "/", { title });
+        await this.getAllFiles();
     }
 
     async uploadFile(id, fileObj) {
@@ -72,10 +76,12 @@ class apiSerivice {
             mode: 'cors'
         };
         await fetch(this._api_url + "/files/" + id, params);
+        await this.getAllFiles();
     }
 
     async deleteFile(id) {
-        return await this.request(METHOD.DELETE, "/files/" + id);
+        await this.request(METHOD.DELETE, "/files/" + id);
+        await this.getAllFiles();
     }
 
     download(id) {

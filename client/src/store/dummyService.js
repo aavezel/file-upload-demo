@@ -30,12 +30,14 @@ class dumpService {
         }
     ];
 
+    onFilesChanged = () => {};
+
     constructor() {
     }
 
     async getAllFiles() {
         await this._later(300);
-        return this._data;
+        this.onFilesChanged(this._data);
     }
 
     async newFile(title) {
@@ -43,7 +45,7 @@ class dumpService {
         const date_add = (new Date()).toISOString();
         const file = { id: this._getUId(), title, date_add, };
         this._data = [...this._data, file];
-        return file;
+        await this.getAllFiles();
     }
 
     async uploadFile(id, fileObj) {
@@ -62,13 +64,13 @@ class dumpService {
             new_file,
             ...this._data.slice(index + 1),
         ];
-        return new_file;
+        await this.getAllFiles();
     }
 
     async deleteFile(id) {
         await this._later(100);
         this._data = this._data.filter(f => f.id != id);
-        return { "status": "ok" };
+        await this.getAllFiles();
     }
 
     download(id) {

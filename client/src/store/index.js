@@ -1,19 +1,19 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import apiWSSerivice from './apiWSSerivice';
+//import apiWSSerivice from './apiWSSerivice';
 //import apiService from './apiSerivice';
-//import dummyService from './dummyService';
+import dummyService from './dummyService';
 
 Vue.use(Vuex)
 
-//const datastore = process.env.VUE_APP_STORE_MODE == "DUMMY" ? new dummyService() : new apiService();
+const datastore = new dummyService();
 //const datastore = new apiService("http://localhost:8888/auth", "http://localhost:8888/api", "http://localhost:8888/file/");
-const datastore = new apiWSSerivice(
-  "http://localhost:8888/auth",
-  "ws://localhost:8888/ws",
-  "http://localhost:8888/api/files/",
-  "http://localhost:8888/file/"
-);
+// const datastore = new apiWSSerivice(
+//   "http://localhost:8888/auth",
+//   "ws://localhost:8888/ws",
+//   "http://localhost:8888/api/files/",
+//   "http://localhost:8888/file/"
+// );
 
 const store = new Vuex.Store({
   state: {
@@ -59,7 +59,7 @@ const store = new Vuex.Store({
 });
 
 
-datastore.onFilesLoaded = (files) => {
+datastore.onFilesChanged = (files) => {
     store.dispatch("LOADED_FILES_LIST", { files });
 };
 
